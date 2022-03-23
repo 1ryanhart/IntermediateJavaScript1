@@ -35,6 +35,15 @@ p {
     font-weight: 100;
 }
 
+#reset {
+    display: block;
+}
+
+#reset:hover {
+    text-decoration: underline;
+    cursor: pointer
+}
+
 /* Grid Styles */
 #grid {
     background: #fff url(images/tracks.png) no-repeat;
@@ -49,6 +58,7 @@ p {
     position: relative;
     box-sizing: border-box;
     width: 100%;
+    transition: all .2s ease-in-out; 
 }
 
 .grid-item:nth-child(1){
@@ -116,6 +126,14 @@ p {
     color: #fff;
 }
 
+.grid-item:hover {
+    text-decoration: underline;
+    cursor: pointer;
+    transform: scale(1.1); 
+    z-index: 999;
+    box-shadow: 0px 0px 10px 10px #f7f7f731;
+}
+
 /* Form Styles */
 .form-container {
     background: #eee;
@@ -172,3 +190,9 @@ select {
     display: block;
     font-size: 0.7em;
 }
+
+/* Added for project */
+.hidden {
+    display: none
+}
+
