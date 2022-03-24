@@ -19,10 +19,7 @@ function randomItem(species,factArray, currentFact = '')
     }
 }
 
-///this fact removal formula is always running on first load, and also always removing the last fact - the BMI fact. this is because the innerText which i want to only be the fact, also includes all the attional info that is showing on hover
-
-
-// 
+//  
 ageLookup = {
     "Late Cretaceous": "100.5 - 66 million years ago",
     "Late Jurassic": "163.5 (+/- 1) - 145.5 million years ago",
@@ -78,7 +75,7 @@ function dynoCompare (dyno, human) {
         comparrison3 = 'longer'
     } 
     if (dyno.diet == human.diet) {
-        comparrison4 = 'also'
+        comparrison4 = 'also '
     } 
     if (dynoBMI > human.bmi ) {
         comparrison5 = 'higher'
@@ -88,7 +85,7 @@ function dynoCompare (dyno, human) {
     dyno.fact.push(`This dynosaur is ${comparrison1} than you are by ${Math.abs(dyno.height - human.height)}"`)
     dyno.fact.push(`This dynosaur is ${comparrison2} than you are by ${Math.abs(dyno.weight - human.weight)}lbs`)
     dyno.fact.push(`This dynosaur's species name is ${comparrison3} than your name (by ${Math.abs(dyno.species.length - human.name.length)} characters)`)
-    dyno.fact.push(`This dynosaur is a ${dyno.diet} and you are ${comparrison4} a ${human.diet}`)
+    dyno.fact.push(`This dynosaur is a ${dyno.diet} and you are ${comparrison4}a ${human.diet}`)
     dyno.fact.push(`The ${dyno.species} lived ${ageLookup[dyno.when]}`)
     dyno.fact.push(`The ${dyno.species} has a ${comparrison5} BMI compared to you (${dynoBMI} vs. ${human.bmi})`)
 }
@@ -129,9 +126,9 @@ const createGrid = function() {
                 newDiv.innerHTML = `
                     <h3>${human.name}</h3>
                     <img src="${human.image}" alt='human image'>
-                    <p>
+                    <div class="info-bar">
                     <span class="hidden" data-id=${i}>Height: ${Math.floor(human.height/12)}'${human.height%12}"<br/>Weight: ${human.weight}lb</span>
-                </p>`
+                </div>`
 
                 newDiv.addEventListener ('mouseenter', () => {
                     extraInfo = document.getElementById(`grid-item:nth-child(4)`).getElementsByTagName('span')[0]
@@ -153,14 +150,14 @@ const createGrid = function() {
             newDiv.innerHTML = `
                 <h3>${dinoArray[i].species}</h3>
                 <img src="images/${dinoArray[i].species}.png" alt=${dinoArray[i].species}>
-                <p data-id=${i}>${randomItem(dinoArray[i].species,dinoArray[i].fact)} 
+                <div class="info-bar"><p data-id=${i}>${randomItem(dinoArray[i].species,dinoArray[i].fact)}</p> 
                 <span class="hidden" data-id=${i}><br/><br/>From: ${dinoArray[i].where}<br/>Height: ${Math.floor(dinoArray[i].height/12)}'${dinoArray[i].height%12}"<br/>Weight: ${dinoArray[i].weight}lb</span>
-                </p>`
+                </div>`
    
             newDiv.addEventListener ('click', () => {
                 factParagraph = document.getElementById(`grid-item:nth-child(${gridIndex})`).getElementsByTagName('p')[0]
                 let i = factParagraph.getAttribute('data-id')
-                factParagraph.innerHTML = `${randomItem(dinoArray[i].species,dinoArray[i].fact,factParagraph.innerText)} <span data-id=${i}><br/><br/>From: ${dinoArray[i].where}<br/>Height: ${Math.floor(dinoArray[i].height/12)}'${dinoArray[i].height%12}"<br/>Weight: ${dinoArray[i].weight}lb</span>`
+                factParagraph.innerHTML = `${randomItem(dinoArray[i].species,dinoArray[i].fact,factParagraph.innerText)}`
             });
             
             newDiv.addEventListener ('mouseenter', () => {

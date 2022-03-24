@@ -110,13 +110,10 @@ p {
 }
 
 .grid-item p {
-    background: rgba(000,000,000, .3);
-    position: absolute;
-    bottom: 0;
+    position: relative;
+    display:contents;
     width: 100%;
-    padding: 0.8em 0.8em 1.8em;
     margin:0;
-    box-sizing: border-box;
     font-size: 1.2em;
     font-weight: 600;
     color: #fff;
@@ -201,3 +198,23 @@ select {
     cursor: pointer;
 }
 
+.info-bar {
+    background: rgba(000,000,000, .3);
+    padding: 0.8em 0.8em 1.8em;
+    position: absolute;
+    display:block;
+    bottom: 0;
+    width: 100%;
+    min-width: 100%;
+    height: auto;
+    margin:0;
+    box-sizing: border-box;
+    font-size: 1.2em;
+    font-weight: 600;
+    color: #fff;
+    transition: height 0.5s;
+}
+
+.info-bar span {
+    display: hidden;
+}
