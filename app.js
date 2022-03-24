@@ -1,20 +1,17 @@
-//global variables for the units
+//global variables for the height and weight units (metric or imperial selection)
 let unitsHeightMetric = false
 let unitsWeightMetric = false
 
-// Random item generator for dyno fact array
+// Selects random fact from dyno fact array, and ensures that new fact is not the same as the previously displayed fact
 function randomItem(species,factArray, currentFact = '')
 {
-    console.log(`current fact: ${currentFact}`)
     if (species == 'Pigeon') {
         return factArray[0];
     } else if (currentFact=='') {
         return factArray[Math.floor(Math.random()*factArray.length)]
     } else {
         let updatedFactArray = [...factArray]
-        console.log(`updated fact array prior to updating:${updatedFactArray}`)
         updatedFactArray.splice(updatedFactArray.indexOf(currentFact), 1);
-        console.log(`updated fact array post removal:${updatedFactArray}`)
         return updatedFactArray[Math.floor(Math.random()*updatedFactArray.length)]
     }
 }
@@ -26,7 +23,7 @@ ageLookup = {
     "Late Jurassic to Early Cretaceous": "roughly 145 million years ago"
 }
 
-// Create Dino Constructor
+// Dino Constructor
 function Dino(dino) {
     this.species = dino.species
     this.weight = dino.weight;
@@ -37,7 +34,7 @@ function Dino(dino) {
     this.fact = dino.fact
 }
 
-// Create Dino Objects
+// Creates Dino Objects
 let dinoArray = [];
 fetch('./dino.json')
     .then(response => response.json())
@@ -45,9 +42,9 @@ fetch('./dino.json')
         dinoArray = data.Dinos.map(dino => new Dino(dino));
 });
 
-// Create Human Object
 let submitButton = document.getElementById('btn');
 
+// Creates human object
 function Human() {
     this.species = 'human';
     this.image = "images/human.png"
@@ -55,8 +52,7 @@ function Human() {
 
 let human = new Human()
 
-// Use IIFE to get human data from form
-
+// This creates and appends more facts to each dinosaur's fact array
 function dynoCompare (dyno, human) {
     let comparrison1 = 'smaller'
     let comparrison2 = 'lighter'
@@ -81,7 +77,6 @@ function dynoCompare (dyno, human) {
         comparrison5 = 'higher'
     }
 
-
     dyno.fact.push(`This dynosaur is ${comparrison1} than you are by ${Math.abs(dyno.height - human.height)}"`)
     dyno.fact.push(`This dynosaur is ${comparrison2} than you are by ${Math.abs(dyno.weight - human.weight)}lbs`)
     dyno.fact.push(`This dynosaur's species name is ${comparrison3} than your name (by ${Math.abs(dyno.species.length - human.name.length)} characters)`)
@@ -93,7 +88,7 @@ function dynoCompare (dyno, human) {
 let resetOption = document.getElementById('reset');
 let form = document.getElementById('dino-compare');
 
-const createGrid = function() {
+const createGrid = function(array) {
     (function(human) {
         let nameValue = document.getElementById('name').value;
         let heightFeetValue = parseInt(document.getElementById('feet').value);
@@ -142,22 +137,22 @@ const createGrid = function() {
                 
                 mainGrid.appendChild(newDiv);
             }
-
-            dynoCompare(dinoArray[i],human)
+        // Creates all the dino tiles
+            dynoCompare(array[i],human)
             let newDiv = document.createElement('div');
             newDiv.classList.add('grid-item')
             newDiv.setAttribute('id',`grid-item:nth-child(${gridIndex})`)
             newDiv.innerHTML = `
-                <h3>${dinoArray[i].species}</h3>
-                <img src="images/${dinoArray[i].species}.png" alt=${dinoArray[i].species}>
-                <div class="info-bar"><p data-id=${i}>${randomItem(dinoArray[i].species,dinoArray[i].fact)}</p> 
-                <span class="hidden" data-id=${i}><br/><br/>From: ${dinoArray[i].where}<br/>Height: ${Math.floor(dinoArray[i].height/12)}'${dinoArray[i].height%12}"<br/>Weight: ${dinoArray[i].weight}lb</span>
+                <h3>${array[i].species}</h3>
+                <img src="images/${array[i].species}.png" alt=${array[i].species}>
+                <div class="info-bar"><p data-id=${i}>${randomItem(array[i].species,array[i].fact)}</p> 
+                <span class="hidden" data-id=${i}><br/><br/>From: ${array[i].where}<br/>Height: ${Math.floor(array[i].height/12)}'${array[i].height%12}"<br/>Weight: ${array[i].weight}lb</span>
                 </div>`
    
             newDiv.addEventListener ('click', () => {
                 factParagraph = document.getElementById(`grid-item:nth-child(${gridIndex})`).getElementsByTagName('p')[0]
                 let i = factParagraph.getAttribute('data-id')
-                factParagraph.innerHTML = `${randomItem(dinoArray[i].species,dinoArray[i].fact,factParagraph.innerText)}`
+                factParagraph.innerHTML = `${randomItem(array[i].species,array[i].fact,factParagraph.innerText)}`
             });
             
             newDiv.addEventListener ('mouseenter', () => {
@@ -206,7 +201,7 @@ function validateForm () {
     }
 
     if (proceed) {
-        createGrid()
+        createGrid(shuffle(dinoArray))
     } else {
         alert(message)
     }
@@ -237,7 +232,6 @@ let switchHeight = document.getElementById('switchHeight')
 let switchWeight = document.getElementById('switchWeight')
 
 switchHeight.addEventListener('click', () => {
-    
     let inchesLabel = document.getElementById('inches-label')
     unitsHeightMetric = (unitsHeightMetric) ? false : true 
     let heightTextLabel = document.getElementById('feet-label')
@@ -250,10 +244,7 @@ switchHeight.addEventListener('click', () => {
         heightTextLabel.innerHTML= 'Feet: <input id="feet" class="form-field__short" type="number" name="feet">'
         inchesLabel.classList.remove('hidden')
     } 
-
-
 })
-
 
 switchWeight.addEventListener('click', () => {
     unitsWeightMetric = (unitsWeightMetric) ? false : true 
@@ -267,6 +258,22 @@ switchWeight.addEventListener('click', () => {
         weightTextLabel.innerHTML= '<input id="weight" class="form-field__full" type="number" name="weight">lbs'
 
     } 
-
-
 })
+
+//to shuffle the dino array for random tile generation
+function shuffle(array) {
+    let currentIndex = array.length, randomIndex;
+  
+    while (currentIndex != 0) {
+  
+      // Pick a remaining element
+      randomIndex = Math.floor(Math.random()*currentIndex);
+      currentIndex--;
+  
+      // And swap it with the current element
+      [array[currentIndex], array[randomIndex]] = [
+        array[randomIndex], array[currentIndex]];
+    }
+  
+    return array;
+}
