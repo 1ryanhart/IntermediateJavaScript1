@@ -1,14 +1,26 @@
+//global variables for the units
+let unitsHeightMetric = false
+let unitsWeightMetric = false
+
 // Random item generator for dyno fact array
-function randomItem(species,factArray, currentFact="")
+function randomItem(species,factArray, currentFact = '')
 {
+    console.log(`current fact: ${currentFact}`)
     if (species == 'Pigeon') {
         return factArray[0];
+    } else if (currentFact=='') {
+        return factArray[Math.floor(Math.random()*factArray.length)]
     } else {
         let updatedFactArray = [...factArray]
-        updatedFactArray.splice(updatedFactArray.indexOf(currentFact), 1 );
+        console.log(`updated fact array prior to updating:${updatedFactArray}`)
+        updatedFactArray.splice(updatedFactArray.indexOf(currentFact), 1);
+        console.log(`updated fact array post removal:${updatedFactArray}`)
         return updatedFactArray[Math.floor(Math.random()*updatedFactArray.length)]
     }
 }
+
+///this fact removal formula is always running on first load, and also always removing the last fact - the BMI fact. this is because the innerText which i want to only be the fact, also includes all the attional info that is showing on hover
+
 
 // 
 ageLookup = {
@@ -66,13 +78,11 @@ function dynoCompare (dyno, human) {
         comparrison3 = 'longer'
     } 
     if (dyno.diet == human.diet) {
-        comparrison4 == 'also'
+        comparrison4 = 'also'
     } 
     if (dynoBMI > human.bmi ) {
         comparrison5 = 'higher'
     }
-
-    //this bit doesnt work - the 'also' isnt appearing
 
 
     dyno.fact.push(`This dynosaur is ${comparrison1} than you are by ${Math.abs(dyno.height - human.height)}"`)
@@ -95,8 +105,8 @@ const createGrid = function() {
         let dietValue = document.getElementById('diet').value.toLowerCase();
 
         human.name = nameValue
-        human.weight = weightValue;
-        human.height = heightFeetValue*12 + heightInchesValue;
+        human.weight = (unitsWeightMetric) ? Math.floor(weightValue*2.20462): weightValue;
+        human.height = (unitsHeightMetric) ? Math.floor(heightFeetValue*0.393701) :heightFeetValue*12 + heightInchesValue;
         human.diet = dietValue;
         human.bmi = bmiCalculator(human.height,human.weight)
                 
@@ -181,10 +191,16 @@ function validateForm () {
         message += 'Please enter your name\n'
         proceed = false
     }
-
-    if (heightFeetValue <0 || isNaN(heightFeetValue) || heightInchesValue <0 || isNaN(heightInchesValue)) {
-        message += 'Please enter a valid height\n'
-        proceed = false
+    if (unitsHeightMetric) {  //if the units are metric, then you only need the one box filled in (which now represents cm)
+        if (heightFeetValue <=0 || isNaN(heightFeetValue)) {
+            message += 'Please enter a valid height\n'
+            proceed = false
+        }
+    } else {
+        if (heightFeetValue <0 || isNaN(heightFeetValue) || heightInchesValue <0 || isNaN(heightInchesValue)) {
+            message += 'Please enter a valid height\n'
+            proceed = false
+        }
     }
 
     if (isNaN(weightValue)) {
@@ -209,7 +225,7 @@ resetOption.addEventListener('click', () => {
     document.getElementById('feet').value = '';
     document.getElementById('inches').value = '';
     document.getElementById('weight').value = '';
-    document.getElementById('diet').value = 'Herbavor';
+    document.getElementById('diet').value = 'Herbivore';
     document.getElementById('grid').innerHTML=''
 })
 
@@ -218,3 +234,42 @@ function bmiCalculator(height,weight) {
     let weightKilograms = weight*0.453592
     return parseInt((weightKilograms/(heightMeters*heightMeters)).toFixed(1))
 }
+
+//Allowing the user to switch between metric and imperial individually for the height and weight
+let switchHeight = document.getElementById('switchHeight')
+let switchWeight = document.getElementById('switchWeight')
+
+switchHeight.addEventListener('click', () => {
+    
+    let inchesLabel = document.getElementById('inches-label')
+    unitsHeightMetric = (unitsHeightMetric) ? false : true 
+    let heightTextLabel = document.getElementById('feet-label')
+    if (unitsHeightMetric) {
+        switchHeight.innerText= 'Switch to ft, in'
+        heightTextLabel.innerHTML= 'cm: <input id="feet" class="form-field__short" type="number" name="feet">'
+        inchesLabel.classList.add('hidden')
+    } else {
+        switchHeight.innerText= 'Switch to cm'
+        heightTextLabel.innerHTML= 'Feet: <input id="feet" class="form-field__short" type="number" name="feet">'
+        inchesLabel.classList.remove('hidden')
+    } 
+
+
+})
+
+
+switchWeight.addEventListener('click', () => {
+    unitsWeightMetric = (unitsWeightMetric) ? false : true 
+    let weightTextLabel = document.getElementById('lb-label')
+    if (unitsWeightMetric) {
+        switchWeight.innerText= 'Switch to lb'
+        weightTextLabel.innerHTML= '<input id="weight" class="form-field__full" type="number" name="weight">kgs'
+   
+    } else {
+        switchWeight.innerText= 'Switch to kg'
+        weightTextLabel.innerHTML= '<input id="weight" class="form-field__full" type="number" name="weight">lbs'
+
+    } 
+
+
+})

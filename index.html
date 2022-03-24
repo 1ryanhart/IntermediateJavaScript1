@@ -17,23 +17,29 @@
     <header>
         <h2>Natural History Museum</h2> 
         <h1>Dinosaurs</h1>
-        <h3>How do you compare? <span class="hidden" id="reset">Start over?</span></h3>
+        <h3>How do you compare? <span class="hidden" id="reset" style="color: rgb(144, 20, 168)">Click to start over</span></h3>
     </header>
     <!-- Form to get user input -->
     <form id="dino-compare">
         <div class="form-container">
             <p>Name:</p>
             <input id="name" class="form-field__full" type="text" name="name">
-            <p>Height</p>
-            <label>Feet: <input id="feet" class="form-field__short" type="number" name="feet"></label>
-            <label>inches: <input id="inches" class="form-field__short" type="number" name="inches"></label>
-            <p>Weight:</p>
-            <label><input id="weight" class="form-field__full" type="number" name="weight">lbs</label>
+            <div style="display: flex; justify-content: space-between;">
+                <p>Height</p>
+                <p class="switch" id="switchHeight">Switch to cm</p>
+            </div>
+            <label id="feet-label">Feet: <input id="feet" class="form-field__short" type="number" name="feet"></label>
+            <label id="inches-label">inches: <input id="inches" class="form-field__short" type="number" name="inches"></label>
+            <div style="display: flex; justify-content: space-between;">
+                <p>Weight:</p>
+                <p class="switch" id="switchWeight">Switch to kg</p>
+            </div>
+                <label id="lb-label"><input id="weight" class="form-field__full" type="number" name="weight">lbs</label>
             <p>Diet:</p>
             <select id="diet" class="form-field__full" name="diet">
-                <option>Herbavor</option>
-                <option>Omnivor</option>
-                <option>Carnivor</option>
+                <option>Herbivore</option>
+                <option>Omnivore</option>
+                <option>Carnivore</option>
             </select>
             <div id="btn">Compare Me!</div>
         </div>
